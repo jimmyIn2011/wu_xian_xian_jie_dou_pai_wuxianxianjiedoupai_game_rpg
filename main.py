@@ -198,14 +198,6 @@ while running:
         screen.blit(pg.font.SysFont("华文楷体", 20).render("你出的牌：", True, WHITE), [471, 261])
         if bliting:
             blittime += 1
-            if blittime > 30:
-                bliting = False
-                if choices[0][1] > choices[1][1]:
-                    shabi.ai_cards.append(choices[1])
-                    shabi.ai_cards = quick_sort(shabi.ai_cards)
-                elif choices[1][1] > choices[0][1]:
-                    shabi.human_cards.append(choices[0])
-                    shabi.human_cards = quick_sort(shabi.human_cards)
             pg.draw.rect(screen, BLACK, [75, 325, 100, 150])
             pg.draw.rect(screen, BLACK, [575, 325, 100, 150])
             pg.draw.rect(screen, choices[0][2], [76, 326, 98, 148])
@@ -226,12 +218,25 @@ while running:
                                                                WHITE if choices[1][2] != WHITE and
                                                                         choices[1][2] != YELLOW else BLACK),
                         [576, 326+53])
+            if blittime > 30:
+                bliting = False
+                if choices[0][1] > choices[1][1]:
+                    shabi.ai_cards.append(choices[1])
+                    shabi.ai_cards = quick_sort(shabi.ai_cards)
+                elif choices[1][1] > choices[0][1]:
+                    shabi.human_cards.append(choices[0])
+                    shabi.human_cards = quick_sort(shabi.human_cards)
+                else:
+                    choices = None
         chk = shabi.check_game_over()
-        if chk[0]:
+        if chk[0] and bliting is False:
             scene = 5
             winner = chk[1]
             if winner == 1:
                 gs += 1
+                money += (gs-1) * 10
+            choices = None
+            bliting = False
         for i in range(len(shabi.human_cards)):
             if onchoose == i:
                 pt = 610
